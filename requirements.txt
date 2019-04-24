@@ -4,6 +4,6 @@
 #
 #    pip-compile requirements.in
 #
--e git+https://git@github.com/msehnout/f8a-messaging-library.git@master#egg=f8a-messaging-library
+-e git+https://github.com/msehnout/f8a-messaging-library.git@master#egg=f8a_mb
 docopt==0.6.2             # via stomp.py
 stomp.py==4.1.22

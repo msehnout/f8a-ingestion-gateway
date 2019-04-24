@@ -5,6 +5,9 @@ import logging
 import os
 import sys
 
+from f8a_mb import MbConsumer
+from f8a_mb.path import topic_release_monitoring_pypi_get_listener
+
 
 def set_up_logger():
     """Set up logging."""
@@ -26,6 +29,18 @@ class Gateway:
 
     def __init__(self):
         """Construct a new gateway instance."""
+        self.consumer = MbConsumer([topic_release_monitoring_pypi_get_listener('Gateway')])
 
     def run(self):
         """Run it."""
+        while True:
+            try:
+                msg = self.consumer.next_message()
+                dict = msg.dict()
+                logger.debug("Received: {}".format(dict))
+            except KeyError:
+                continue
+            except KeyboardInterrupt:
+                self.consumer.disconnect()
+                exit(0)
+
