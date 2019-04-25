@@ -37,7 +37,7 @@ class Gateway:
             try:
                 msg = self.consumer.next_message()
                 dict = msg.dict()
-                logger.debug("Received: {}".format(dict))
+                logger.info("Now I'd send this to the Ingestion API: {}".format(dict))
             except KeyError:
                 continue
             except KeyboardInterrupt:
