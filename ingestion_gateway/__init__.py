@@ -5,11 +5,16 @@ import logging
 import os
 import sys
 
+import requests
+
 from f8a_mb import MbConsumer
 from f8a_mb.path import topic_release_monitoring_pypi_get_listener,\
                         topic_release_monitoring_npm_get_listener
 
 from ingestion_gateway.debug_output import DebugOutput
+
+
+API_SERVER = os.environ.get('API_SERVER', 'http://localhost:8080')
 
 
 def set_up_logger():
@@ -18,7 +23,7 @@ def set_up_logger():
     formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
     handler = logging.StreamHandler(sys.stdout)
     handler.setFormatter(formatter)
-    logger = logging.getLogger('release_monitor')
+    logger = logging.getLogger('ingestion_gateway')
     logger.setLevel(loglevel)
     logger.addHandler(handler)
     return logger
@@ -43,7 +48,11 @@ class Gateway:
             try:
                 msg = self.consumer.next_message()
                 dict = msg.dict()
-                logger.info("Now I'd send this to the Ingestion API: {}".format(dict))
+                logger.info("Sending this to the ingestion API: {}".format(dict))
+                r = requests.post('{}/submit'.format(API_SERVER), json=dict)
+                if r.status_code != 200:
+                    logger.warning('Failed to submit the data (code {})'.format(r.status_code))
+
                 self.debug_output.insert(msg.content)
             except KeyError:
                 continue
