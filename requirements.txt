@@ -5,5 +5,10 @@
 #    pip-compile requirements.in
 #
 -e git+https://github.com/msehnout/f8a-messaging-library.git@master#egg=f8a_mb
+certifi==2019.3.9         # via requests
+chardet==3.0.4            # via requests
 docopt==0.6.2             # via stomp.py
+idna==2.8                 # via requests
+requests==2.21.0
 stomp.py==4.1.22
+urllib3==1.24.3           # via requests
