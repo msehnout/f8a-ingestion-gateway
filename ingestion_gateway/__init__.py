@@ -49,9 +49,12 @@ class Gateway:
                 msg = self.consumer.next_message()
                 dict = msg.dict()
                 logger.info("Sending this to the ingestion API: {}".format(dict))
-                r = requests.post('{}/submit'.format(API_SERVER), json=dict)
-                if r.status_code != 200:
-                    logger.warning('Failed to submit the data (code {})'.format(r.status_code))
+                try:
+                    r = requests.post('{}/submit'.format(API_SERVER), json=dict)
+                    if r.status_code != 200:
+                        logger.warning('Failed to submit the data (code {})'.format(r.status_code))
+                except Exception as e:
+                    logger.error(e)
 
                 self.debug_output.insert(msg.content)
             except KeyError:
